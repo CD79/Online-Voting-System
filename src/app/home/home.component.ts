@@ -13,6 +13,10 @@ export class HomeComponent implements OnInit {
 
   private destroy$: ReplaySubject<boolean> = new ReplaySubject(1);
   products = [];
+  votes = 0;
+  idx;
+  uvflag: boolean = false;
+  dvflag: boolean = false;
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
@@ -54,5 +58,41 @@ export class HomeComponent implements OnInit {
       console.log(res);
       this.products = res.body;
     })
+  }
+  public onUpvoteClick(product){
+    this.votes = product.vote_count;
+    if(this.uvflag == false)
+    {
+      this.uvflag=true;
+      this.votes = this.votes+1;
+    }
+    else{
+      this.uvflag=false;
+      this.votes = this.votes-1;
+    }
+    this.idx = product.id; 
+    product.vote_count = this.votes;
+    this.apiService.sendPutRequest(product,this.idx).subscribe((res: HttpResponse<any>) => {
+      console.log(res);
+    });
+    console.log(this.votes);
+  }
+  public onDownvoteClick(product){
+    this.votes = product.vote_count;
+    if(this.dvflag == false)
+    {
+      this.dvflag=true;
+      this.votes = this.votes-1;
+    }
+    else{
+      this.dvflag=false;
+      this.votes = this.votes+1;
+    }
+    this.idx = product.id; 
+    product.vote_count = this.votes;
+    this.apiService.sendPutRequest(product,this.idx).subscribe((res: HttpResponse<any>) => {
+      console.log(res);
+    });
+    console.log(this.votes);
   }
 }

@@ -53,7 +53,8 @@ export class ApiService {
   public sendGetRequest(){
     // Add safe, URL encoded _page and _limit parameters 
 
-    return this.httpClient.get(this.SERVER_URL, {  params: new HttpParams({fromString: "_page=1&_limit=20"}), observe: "response"}).pipe(retry(3), catchError(this.handleError), tap(res => {
+    return this.httpClient.get(this.SERVER_URL, {  params: new HttpParams({fromString: "_page=1&_limit=20"}), observe: "response"}).pipe(retry(3),
+     catchError(this.handleError), tap(res => {
       console.log(res.headers.get('Link'));
       this.parseLinkHeader(res.headers.get('Link'));
     }));
@@ -67,4 +68,9 @@ export class ApiService {
     }));  
   }
   
+  public sendPutRequest(updatedProduct,idx){
+    let endp = this.SERVER_URL+"/";
+    return this.httpClient.put(endp+idx, updatedProduct).pipe( 			
+    catchError(this.handleError));
+  }
 }
